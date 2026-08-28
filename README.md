@@ -245,4 +245,10 @@ executes the TypeScript sources directly via Node's type stripping.
 
 ## Licence
 
-MIT
+Babeltag itself is **MIT**.
+
+Its one runtime dependency, [`node-taglib-sharp`](https://github.com/benrr101/node-taglib-sharp),
+is **LGPL-2.1-or-later**. Babeltag uses it as an ordinary npm dependency — a separate,
+user-replaceable module, never bundled or modified — so MIT applies to this code while the
+library keeps its own terms. If you redistribute Babeltag, keep that dependency replaceable and
+carry its licence with it.

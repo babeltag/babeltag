@@ -6,6 +6,7 @@
  * intact so `undo` can put everything back.
  */
 import fs from 'node:fs';
+import path from 'node:path';
 import type { Confidence, ScanPlan } from '../core/types.ts';
 import { decideEntry } from '../core/plan.ts';
 import type { WritePolicy } from '../core/plan.ts';
@@ -27,7 +28,21 @@ export interface ApplyResult {
   tagsWritten: number;
   skippedFiles: number;
   missingFiles: number;
+  /** Plan entries pointing outside the library — refused, never written. */
+  outsideLibrary: number;
   journalPath: string;
+}
+
+/**
+ * The plan is a file on disk, so treat its paths as input rather than fact.
+ *
+ * A crafted `.babeltag/plan.json` could otherwise name any path on the system and have
+ * `apply` write tags into it. Everything we touch must sit inside the library we were
+ * pointed at.
+ */
+function isInsideLibrary(candidate: string, root: string): boolean {
+  const relative = path.relative(root, path.resolve(candidate));
+  return relative !== '' && !relative.startsWith('..') && !path.isAbsolute(relative);
 }
 
 export async function apply(options: ApplyOptions): Promise<ApplyResult> {
@@ -45,10 +60,16 @@ export async function apply(options: ApplyOptions): Promise<ApplyResult> {
       tagsWritten: 0,
       skippedFiles: 0,
       missingFiles: 0,
+      outsideLibrary: 0,
       journalPath: paths.journal,
     };
 
     for (const entry of options.plan.entries) {
+      // Refuse anything the plan points at outside the library, before any other work.
+      if (!isInsideLibrary(entry.path, paths.root)) {
+        result.outsideLibrary++;
+        continue;
+      }
       // Cheap pre-filter on the plan alone: nothing resolved, or nothing confident
       // enough, means we never need to open the file at all.
       if (decideEntry({ ...entry, existingCountry: null, existingLanguage: null }, policy).writes.length === 0) {
@@ -92,6 +113,9 @@ export async function apply(options: ApplyOptions): Promise<ApplyResult> {
 
     log(`Tagged ${result.filesChanged} file(s) with ${result.tagsWritten} value(s).`);
     if (result.missingFiles > 0) log(`${result.missingFiles} file(s) from the plan no longer exist.`);
+    if (result.outsideLibrary > 0) {
+      log(`REFUSED ${result.outsideLibrary} plan entr(ies) pointing outside the library — the plan file may be tampered with.`);
+    }
     if (result.tagsWritten > 0) log(`Undo journal: ${result.journalPath}`);
     return result;
   });

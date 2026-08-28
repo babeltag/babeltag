@@ -51,6 +51,7 @@ with it, deliberately.
 | I2 | Symlinks are not followed when walking a library | `lib/walk.ts` |
 | I3 | Dot-directories are skipped, so the tool never scans its own state | `safety.test.ts` — *walk skips dot-directories* |
 | I4 | An unreadable file is reported, never fatal to the run | `commands/scan.ts`; `safety.test.ts` — *apply tolerates a file that vanished after the scan* |
+| I5 | `apply` refuses any plan entry resolving outside the library root | `safety.test.ts` — *apply refuses plan entries pointing outside the library* |
 
 ## V — Navidrome interoperability
 

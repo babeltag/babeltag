@@ -21,6 +21,13 @@ every invariant there is locked by a named test.
 - Node 20+, TypeScript, ESM. **One** runtime dependency: `node-taglib-sharp` (pinned exact).
 - Cache, CLI parsing, and tests come from Node itself — `node:util parseArgs`, `node:test`,
   plain JSONL files. Adding a dependency needs a real justification.
+- **DO NOT remove the `uuid` override in `package.json`.** `node-taglib-sharp` pins `uuid@8`,
+  which carries GHSA-w5hq-g745-h8pq. That advisory covers `v3/v5/v6` when a `buf` argument is
+  passed, and taglib only ever calls `v4()` with no arguments — so it is not exploitable here —
+  but the override keeps a public install audit-clean. CI runs `npm audit --omit=dev` to hold it.
+- `node-taglib-sharp` is **LGPL-2.1-or-later** while this code is MIT. Keep it an ordinary
+  npm dependency: never vendor it into the tree or bundle it into a single file, or the
+  licensing story changes.
 
 ## Layout
 

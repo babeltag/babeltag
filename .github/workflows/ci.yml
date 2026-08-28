@@ -19,6 +19,10 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
       - run: npm ci
+      # Guards the `overrides` pin: node-taglib-sharp ships an old uuid, and without
+      # the override this fails. Runtime deps only — a dev-tool advisory is not a
+      # vulnerability in what users install.
+      - run: npm audit --omit=dev
       - run: npm run typecheck
       - run: npm run build
       # Tests use committed audio fixtures and stubbed HTTP, so they need neither

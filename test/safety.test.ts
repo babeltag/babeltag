@@ -221,6 +221,23 @@ test('apply tolerates a file that vanished after the scan', async () => {
   assert.equal(readField(present, 'country'), 'JP');
 });
 
+test('apply refuses plan entries pointing outside the library', async () => {
+  // The plan is a file on disk, so a tampered one must not be able to aim `apply` at
+  // arbitrary paths. Everything written has to sit inside the library we were given.
+  const library = tempDir();
+  const elsewhere = tempDir();
+  const inside = copyFixture('flac', library, 'inside.flac');
+  const outside = copyFixture('flac', elsewhere, 'outside.flac');
+  const traversal = path.join(library, '..', path.basename(elsewhere), 'outside.flac');
+
+  const result = await apply({ library, plan: planFor([inside, outside, traversal]) });
+
+  assert.equal(result.outsideLibrary, 2, 'both the absolute and the ../ path must be refused');
+  assert.equal(result.filesChanged, 1);
+  assert.equal(readField(inside, 'country'), 'JP', 'the legitimate file is still tagged');
+  assert.equal(readField(outside, 'country'), null, 'the outside file must be untouched');
+});
+
 test('undo with no journal is a clear error, not a crash', async () => {
   await assert.rejects(undo({ library: tempDir() }), /nothing to undo/);
 });
