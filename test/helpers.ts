@@ -20,11 +20,3 @@ export function copyFixture(format: string, dir: string, name = `track.${format}
   return target;
 }
 
-/** Build a small library of one track per format. */
-export function makeLibrary(dir: string): string[] {
-  return FORMATS.map((format) => copyFixture(format, dir));
-}
-
-export function readJson<T>(filePath: string): T {
-  return JSON.parse(fs.readFileSync(filePath, 'utf8')) as T;
-}

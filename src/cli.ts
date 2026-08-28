@@ -7,7 +7,6 @@ import { rankedCounts, summarize } from './core/plan.ts';
 import type { WritePolicy } from './core/plan.ts';
 import type { LanguageSource } from './core/resolve.ts';
 import { defaultUserAgent } from './mb/client.ts';
-import { statePaths } from './lib/paths.ts';
 import { LockHeldError } from './lib/lock.ts';
 import { loadPlan, scan } from './commands/scan.ts';
 import { apply } from './commands/apply.ts';
@@ -238,5 +237,3 @@ async function main(): Promise<void> {
 if (process.argv[1] && import.meta.url.endsWith(path.basename(process.argv[1]))) {
   void main();
 }
-
-export { statePaths };
