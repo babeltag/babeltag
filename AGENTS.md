@@ -99,7 +99,7 @@ every invariant there is locked by a named test.
 
 | File | For |
 |---|---|
-| `CLAUDE.md` (this file) | Rules an agent needs before changing anything |
+| `AGENTS.md` (this file) | Rules an agent needs before changing anything |
 | [CONTRACT.md](CONTRACT.md) | Every behavioural invariant, mapped to the test that locks it |
 | [README.md](README.md) | The user-facing guide — install, commands, Navidrome setup |
 
