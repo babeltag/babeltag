@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  # The test suite runs TypeScript directly, which needs Node's type stripping (22+).
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ['22', '24']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+      # Tests use committed audio fixtures and stubbed HTTP, so they need neither
+      # ffmpeg nor network access. The audio-integrity check skips itself cleanly
+      # when ffmpeg is absent.
+      - run: npm test
+
+  # The published package ships compiled JS, so prove it actually runs on our
+  # oldest supported runtime.
+  supported-runtime:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: node dist/cli.js --version
+      - run: node dist/cli.js config
