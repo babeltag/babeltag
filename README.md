@@ -234,6 +234,9 @@ npm run typecheck
 npm run build
 ```
 
+The published package runs on Node 20+, but **running the test suite needs Node 22+** — it
+executes the TypeScript sources directly via Node's type stripping.
+
 ## What it does not do
 
 - **Import festivals from an iCal feed.** That is a sub/wave feature, not a metadata concern.
