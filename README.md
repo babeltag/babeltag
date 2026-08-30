@@ -54,15 +54,24 @@ Written using the exact per-format keys Navidrome matches on:
 
 ## Install
 
-```bash
-npm install -g babeltag     # needs Node 20+
-```
-
-Or Docker:
+Needs Node 20+.
 
 ```bash
-docker run --rm -v /path/to/music:/music ghcr.io/babeltag/babeltag scan /music
+git clone https://github.com/babeltag/babeltag.git
+cd babeltag
+npm install
+npm run build
+npm link            # optional — puts `babeltag` on your PATH
 ```
+
+Or build the Docker image yourself:
+
+```bash
+docker build -t babeltag .
+docker run --rm -v /path/to/music:/music babeltag scan /music
+```
+
+Not on npm or a container registry yet — clone or build is the way in for now.
 
 ## Use it
 
@@ -229,7 +238,7 @@ The tricky claims here were checked against the real thing rather than the docs:
 
 ```bash
 npm install
-npm test          # 113 tests, no network, no ffmpeg required
+npm test          # 114 tests, no network, no ffmpeg required
 npm run typecheck
 npm run build
 ```
@@ -242,6 +251,10 @@ executes the TypeScript sources directly via Node's type stripping.
 - **Import festivals from an iCal feed.** That is a sub/wave feature, not a metadata concern.
 - **Guess a language from a Latin-script title.** See above.
 - **Write `releasecountry`.** Picard already does, and it answers the wrong question.
+
+## Built with
+
+Babeltag was built with [Omniscio](https://omniscio.com).
 
 ## Licence
 

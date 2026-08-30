@@ -74,7 +74,7 @@ every invariant there is locked by a named test.
 
 ## Testing
 
-- `npm test` — 113 tests, no network, no ffmpeg required.
+- `npm test` — 114 tests, no network, no ffmpeg required.
 - **Node 22+ is required to RUN the tests** (type stripping). The published package ships
   compiled JS and supports Node 20; CI checks that separately.
 - The audio-integrity test uses ffmpeg when present and skips itself cleanly when not.
