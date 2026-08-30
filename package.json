@@ -14,6 +14,14 @@
     "id3"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/babeltag/babeltag.git"
+  },
+  "homepage": "https://github.com/babeltag/babeltag#readme",
+  "bugs": {
+    "url": "https://github.com/babeltag/babeltag/issues"
+  },
   "type": "module",
   "engines": {
     "node": ">=20.0.0"
